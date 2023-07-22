@@ -1,8 +1,11 @@
 package com.womentech.server.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -16,10 +19,10 @@ public class Bookmark {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    private Boolean classification;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private Long number;
+
+    private LocalDateTime dateTime;
 }

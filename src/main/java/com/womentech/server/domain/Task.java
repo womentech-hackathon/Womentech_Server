@@ -1,37 +1,41 @@
 package com.womentech.server.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.womentech.server.domain.converter.SetDayConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import static com.womentech.server.domain.CompletionStatus.COMPLETE;
 import static com.womentech.server.domain.CompletionStatus.PROGRESS;
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
 @Setter
-public class Goal {
+public class Task {
     @Id
     @GeneratedValue
-    @Column(name = "goal_id")
+    @Column(name = "task_id")
     private Long id;
 
-    @OneToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "goal_id")
+    private Goal goal;
 
-    @OneToMany(mappedBy = "goal")
-    private List<Task> tasks = new ArrayList<>();
+    @OneToMany(mappedBy = "task")
+    private List<DailyTask> dailyTasks = new ArrayList<>();
 
     private String name;
+
+    @Convert(converter = SetDayConverter.class)
+    private EnumSet<Day> days;
 
     private LocalDate startDate;
 

@@ -2,40 +2,30 @@ package com.womentech.server.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.womentech.server.domain.CompletionStatus.COMPLETE;
 import static com.womentech.server.domain.CompletionStatus.PROGRESS;
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
 @Setter
-public class Goal {
+@NoArgsConstructor
+public class DailyTask {
     @Id
     @GeneratedValue
-    @Column(name = "goal_id")
+    @Column(name = "daily_task_id")
     private Long id;
 
-    @OneToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "task_id")
+    private Task task;
 
-    @OneToMany(mappedBy = "goal")
-    private List<Task> tasks = new ArrayList<>();
-
-    private String name;
-
-    private LocalDate startDate;
-
-    private LocalDate endDate;
+    private LocalDate date;
 
     @Enumerated(STRING)
     private CompletionStatus status;
