@@ -1,17 +1,16 @@
 package com.womentech.server.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
+import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Bookmark {
     @Id
     @GeneratedValue
@@ -22,7 +21,5 @@ public class Bookmark {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long number;
-
-    private LocalDateTime dateTime;
+    private int number;
 }

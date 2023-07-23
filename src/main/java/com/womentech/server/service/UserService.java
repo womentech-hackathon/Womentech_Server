@@ -33,7 +33,6 @@ public class UserService {
                 .name(name)
                 .password(encoder.encode(password))
                 .build();
-
         userRepository.save(user);
     }
 

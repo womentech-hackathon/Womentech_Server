@@ -35,7 +35,5 @@ public class DailyTaskScheduler {
             dailyTask.setTask(task);
             dailyTaskRepository.save(dailyTask);
         }
-
-        System.out.println(inProgressTasks.size() + " tasks added to daily_task.");
     }
 }

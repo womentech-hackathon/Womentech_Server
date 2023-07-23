@@ -1,6 +1,5 @@
 package com.womentech.server.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.womentech.server.domain.converter.SetDayConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
