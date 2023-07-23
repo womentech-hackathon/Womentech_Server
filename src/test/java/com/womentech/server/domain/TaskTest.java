@@ -22,7 +22,7 @@ public class TaskTest {
         task.setName("Test Practice");
 
         // Day EnumSet 생성
-        EnumSet<Day> days = EnumSet.of(Day.MON, Day.WED, Day.FRI);
+        EnumSet<Day> days = EnumSet.of(Day.월, Day.화, Day.수);
         task.setDays(days);
 
         // Task 저장
