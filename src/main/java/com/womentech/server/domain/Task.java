@@ -2,8 +2,7 @@ package com.womentech.server.domain;
 
 import com.womentech.server.domain.converter.SetDayConverter;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +17,9 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Task {
     @Id
     @GeneratedValue
@@ -45,10 +47,12 @@ public class Task {
 
     // == 비즈니스 로직 == //
     public void complete() {
+        this.endDate = LocalDate.now();
         this.status = COMPLETE;
     }
 
     public void unComplete() {
+        this.endDate = null;
         this.status = PROGRESS;
     }
 }

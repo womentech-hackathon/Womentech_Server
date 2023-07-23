@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserLoginRequest {
     private String identifier;
-
     private String password;
 }

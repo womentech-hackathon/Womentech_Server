@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @Tag(name = "education", description = "교육 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/education")
+@RequestMapping("/education/bookmarks")
 public class BookmarkController {
     private final BookmarkService bookmarkService;
 
-    @GetMapping("/bookmarks")
+    @GetMapping()
     @Operation(summary = "교육 북마크 조회", description = "사용자의 교육 북마크를 조회합니다.")
     @ApiResponse(responseCode = "200", description = "성공적으로 조회합니다.",
             content = @Content(mediaType = "application/json",
@@ -35,14 +35,14 @@ public class BookmarkController {
         return dto;
     }
 
-    @PostMapping("/bookmarks")
+    @PostMapping()
     @Operation(summary = "교육 북마크 추가", description = "사용자의 교육 북마크를 추가합니다.")
     @ApiResponse(responseCode = "200", description = "성공적으로 추가합니다.")
     public void addBookmark(@RequestParam Long userId, @RequestParam int number) {
         bookmarkService.addBookmark(userId, number);
     }
 
-    @DeleteMapping("/bookmarks/{bookmark_id}")
+    @DeleteMapping("/{bookmark_id}")
     @Operation(summary = "교육 북마크 삭제", description = "사용자의 교육 북마크를 삭제합니다.")
     @ApiResponse(responseCode = "200", description = "성공적으로 삭제합니다.")
     public void deleteBookmark(@PathVariable Long bookmark_id) {

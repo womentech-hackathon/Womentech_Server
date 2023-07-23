@@ -24,7 +24,7 @@ public class UserController {
     @Operation(summary = "회원가입", description = "회원가입합니다.")
     @ApiResponse(responseCode = "200", description = "성공적으로 회원가입합니다.",
             content = @Content(mediaType = "text/plain",
-                    schema = @Schema(implementation = String.class)))
+                    schema = @Schema(implementation = ResponseEntity.class)))
     public ResponseEntity<String> join(@RequestBody UserJoinRequest dto) {
         userService.join(dto.getIdentifier(), dto.getName(), dto.getPassword());
         return ResponseEntity.ok().body("회원가입을 성공했습니다.");
@@ -34,7 +34,7 @@ public class UserController {
     @Operation(summary = "로그인", description = "로그인합니다.")
     @ApiResponse(responseCode = "200", description = "성공적으로 로그인합니다.",
             content = @Content(mediaType = "text/plain",
-                    schema = @Schema(implementation = String.class)))
+                    schema = @Schema(implementation = ResponseEntity.class)))
     public ResponseEntity<String> login(@RequestBody UserLoginRequest dto) {
         String token = userService.login(dto.getIdentifier(), dto.getPassword());
         return ResponseEntity.ok().body(token);

@@ -1,6 +1,5 @@
 package com.womentech.server.domain.scheduler;
 
-import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.DailyTask;
 import com.womentech.server.domain.Task;
 import com.womentech.server.repository.DailyTaskRepository;
@@ -11,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static com.womentech.server.domain.CompletionStatus.PROGRESS;
 
 @Component
 public class DailyTaskScheduler {
@@ -26,13 +27,14 @@ public class DailyTaskScheduler {
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정(00:00)에 실행
     public void addInProgressTasksToDailyTask() {
         // task 테이블에서 status가 PROGRESS인 데이터 조회
-        List<Task> inProgressTasks = taskRepository.findByStatus(CompletionStatus.PROGRESS);
+        List<Task> inProgressTasks = taskRepository.findByStatus(PROGRESS);
 
         // 조회된 데이터를 daily_task 테이블에 추가
         for (Task task : inProgressTasks) {
             DailyTask dailyTask = new DailyTask();
             dailyTask.setDate(LocalDate.now());
             dailyTask.setTask(task);
+            dailyTask.setStatus(PROGRESS);
             dailyTaskRepository.save(dailyTask);
         }
     }
