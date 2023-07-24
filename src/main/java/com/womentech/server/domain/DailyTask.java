@@ -23,8 +23,10 @@ public class DailyTask {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "task_id")
-    private Task task;
+    @JoinColumn(name = "goal_id")
+    private Goal goal;
+
+    private Long taskId;    // task_id 추가
 
     private LocalDate date;
 

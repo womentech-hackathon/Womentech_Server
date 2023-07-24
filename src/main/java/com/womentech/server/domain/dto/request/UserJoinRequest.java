@@ -1,4 +1,4 @@
-package com.womentech.server.domain.dto;
+package com.womentech.server.domain.dto.request;
 
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;

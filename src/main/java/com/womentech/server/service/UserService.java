@@ -2,6 +2,7 @@ package com.womentech.server.service;
 
 import com.womentech.server.domain.User;
 import com.womentech.server.exception.AppException;
+import com.womentech.server.exception.ErrorResponse;
 import com.womentech.server.exception.ErrorCode;
 import com.womentech.server.repository.UserRepository;
 import com.womentech.server.utils.JwtTokenUtil;
@@ -24,7 +25,7 @@ public class UserService {
         // identifier 중복 check
         userRepository.findByIdentifier(identifier)
                 .ifPresent(user -> {
-                    throw new AppException(ErrorCode.IDENTIFIER_DUPLICATED, identifier + "는 이미 있습니다.");
+                    throw new AppException(ErrorCode.IDENTIFIER_DUPLICATED, "이미 존재하는 아이디입니다.");
                 });
 
         // 저장
@@ -39,7 +40,7 @@ public class UserService {
     public String login(String identifier, String password) {
         // 실패 - identifier 없음
         User user = userRepository.findByIdentifier(identifier)
-                .orElseThrow(() -> new AppException(ErrorCode.IDENTIFIER_NOT_FOUND, identifier + "이 없습니다."));
+                .orElseThrow(() -> new AppException(ErrorCode.IDENTIFIER_NOT_FOUND, "존재하지 않는 아이디입니다."));
 
         // 실패 - password 틀림
         if (!encoder.matches(password, user.getPassword())) {

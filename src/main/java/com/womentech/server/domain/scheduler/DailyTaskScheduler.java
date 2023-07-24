@@ -32,8 +32,9 @@ public class DailyTaskScheduler {
         // 조회된 데이터를 daily_task 테이블에 추가
         for (Task task : inProgressTasks) {
             DailyTask dailyTask = new DailyTask();
+            dailyTask.setGoal(task.getGoal());
+            dailyTask.setTaskId(task.getId());
             dailyTask.setDate(LocalDate.now());
-            dailyTask.setTask(task);
             dailyTask.setStatus(PROGRESS);
             dailyTaskRepository.save(dailyTask);
         }

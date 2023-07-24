@@ -30,9 +30,6 @@ public class Task {
     @JoinColumn(name = "goal_id")
     private Goal goal;
 
-    @OneToMany(mappedBy = "task")
-    private List<DailyTask> dailyTasks = new ArrayList<>();
-
     private String name;
 
     @Convert(converter = SetDayConverter.class)

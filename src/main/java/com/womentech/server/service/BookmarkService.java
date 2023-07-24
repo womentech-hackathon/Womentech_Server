@@ -15,8 +15,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookmarkService {
-    private final BookmarkRepository bookmarkRepository;
     private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public List<Bookmark> findBookmarks(Long userId) {
         return bookmarkRepository.findByUserIdOrderByIdDesc(userId);

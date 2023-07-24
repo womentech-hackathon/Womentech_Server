@@ -30,6 +30,9 @@ public class Goal {
     @OneToMany(mappedBy = "goal")
     private List<Task> tasks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "goal")
+    private List<DailyTask> dailyTasks = new ArrayList<>();
+
     private String name;
 
     private LocalDate startDate;

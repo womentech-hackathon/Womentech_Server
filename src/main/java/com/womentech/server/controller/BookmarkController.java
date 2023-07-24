@@ -1,7 +1,7 @@
 package com.womentech.server.controller;
 
 import com.womentech.server.domain.Bookmark;
-import com.womentech.server.domain.dto.BookmarkResponse;
+import com.womentech.server.domain.dto.response.BookmarkResponse;
 import com.womentech.server.service.BookmarkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

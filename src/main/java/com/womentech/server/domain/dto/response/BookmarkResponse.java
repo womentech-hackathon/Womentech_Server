@@ -1,4 +1,4 @@
-package com.womentech.server.domain.dto;
+package com.womentech.server.domain.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

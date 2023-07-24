@@ -1,4 +1,4 @@
-package com.womentech.server.domain.dto;
+package com.womentech.server.domain.dto.request;
 
 import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.Day;

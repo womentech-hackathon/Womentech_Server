@@ -1,6 +1,6 @@
 package com.womentech.server.controller;
 
-import com.womentech.server.domain.dto.TaskRequest;
+import com.womentech.server.domain.dto.request.TaskRequest;
 import com.womentech.server.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
