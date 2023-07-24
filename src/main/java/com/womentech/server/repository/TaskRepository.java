@@ -11,4 +11,7 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     // 상태 정보를 기준으로 조회하는 메서드
     List<Task> findByStatus(CompletionStatus status);
+
+    // goal_id에 해당하는 task들을 조회하는 메서드
+    List<Task> findByGoalId(Long goal_id);
 }

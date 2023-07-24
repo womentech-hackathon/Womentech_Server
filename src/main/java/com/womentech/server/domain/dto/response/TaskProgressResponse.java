@@ -11,9 +11,8 @@ import java.util.EnumSet;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class DailyTaskResponse {
-    Long id;
-    String name;
-    EnumSet<Day> days;
-    CompletionStatus status;
+public class TaskProgressResponse {
+    private String name;
+    private EnumSet<Day> days;
+    private CompletionStatus status;
 }

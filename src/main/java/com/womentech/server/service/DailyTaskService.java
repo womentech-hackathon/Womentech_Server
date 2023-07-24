@@ -17,4 +17,18 @@ public class DailyTaskService {
     public List<DailyTask> findDailyTasks(Long goal_id) {
         return dailyTaskRepository.findByGoalId(goal_id);
     }
+
+    @Transactional
+    public void completeDailyTask(Long daily_task_id) {
+        DailyTask dailyTask = dailyTaskRepository.findById(daily_task_id).orElse(null);
+        dailyTask.complete();
+        dailyTaskRepository.save(dailyTask);
+    }
+
+    @Transactional
+    public void unCompleteDailyTask(Long daily_task_id) {
+        DailyTask dailyTask = dailyTaskRepository.findById(daily_task_id).orElse(null);
+        dailyTask.unComplete();
+        dailyTaskRepository.save(dailyTask);
+    }
 }
