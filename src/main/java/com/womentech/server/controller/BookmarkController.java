@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,32 +31,35 @@ public class BookmarkController {
     @ApiResponse(responseCode = "200", description = "교육 북마크 목록",
             content = @Content(mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = BookmarkResponse.class))))
-    public List<BookmarkResponse> getBookmarks(@RequestParam Long userId) {
+    public List<BookmarkResponse> getBookmarks(Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
         List<Bookmark> bookmarks = bookmarkService.findBookmarks(userId);
         List<BookmarkResponse> dto = bookmarks.stream()
-                .map(bookmark -> new BookmarkResponse(bookmark.getId(), bookmark.getNumber()))
+                .map(bookmark -> new BookmarkResponse(bookmark.getNumber()))
                 .collect(Collectors.toList());
         return dto;
     }
 
-    @PostMapping()
+    @PostMapping("/{number}")
     @Operation(summary = "교육 북마크 추가", description = "사용자의 교육 북마크를 추가합니다.")
     @ApiResponse(responseCode = "OK", description = "교육 북마크 추가를 성공했습니다.",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<?> addBookmark(@RequestParam Long userId, @RequestParam int number) {
+    public ResponseEntity<?> addBookmark(@PathVariable int number, Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
         bookmarkService.addBookmark(userId, number);
         return ResponseEntity.ok()
                 .body(new ErrorResponse(HttpStatus.OK.name(), "교육 북마크를 추가를 성공했습니다."));
     }
 
-    @DeleteMapping("/{bookmark_id}")
+    @DeleteMapping("/{number}")
     @Operation(summary = "교육 북마크 삭제", description = "사용자의 교육 북마크를 삭제합니다.")
     @ApiResponse(responseCode = "OK", description = "교육 북마크 삭제를 성공했습니다.",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<?> deleteBookmark(@PathVariable Long bookmark_id) {
-        bookmarkService.deleteBookmark(bookmark_id);
+    public ResponseEntity<?> deleteBookmark(@PathVariable int number, Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
+        bookmarkService.deleteBookmark(userId, number);
         return ResponseEntity.ok()
                 .body(new ErrorResponse(HttpStatus.OK.name(), "교육 북마크를 삭제를 성공했습니다."));
     }

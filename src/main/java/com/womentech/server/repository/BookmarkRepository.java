@@ -12,4 +12,6 @@ import java.util.List;
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     @Query("SELECT b FROM Bookmark b WHERE b.user.id = :userId ORDER BY b.id DESC")
     List<Bookmark> findByUserIdOrderByIdDesc(@Param("userId") Long userId);
+
+    void deleteByUserIdAndNumber(Long userId, int number);
 }

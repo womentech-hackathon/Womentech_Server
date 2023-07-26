@@ -2,10 +2,9 @@ package com.womentech.server.service;
 
 import com.womentech.server.domain.User;
 import com.womentech.server.exception.AppException;
-import com.womentech.server.exception.ErrorResponse;
 import com.womentech.server.exception.ErrorCode;
 import com.womentech.server.repository.UserRepository;
-import com.womentech.server.utils.JwtTokenUtil;
+import com.womentech.server.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,9 +16,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
 
-    @Value("${jwt.token.secret}")
-    private String key;
-    private Long expireTimeMs = 1000 * 60 * 60l;
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private Long expiredMs = 1000 * 60 * 60l;   // 1 hour
 
     public void join(String identifier, String name, String password) {
         // identifier 중복 check
@@ -47,7 +47,7 @@ public class UserService {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "패스워드를 잘못 입력했습니다.");
         }
 
-        String token = JwtTokenUtil.createToken(user.getIdentifier(), key, expireTimeMs);
+        String token = JwtUtil.createJwt(user.getId(), secretKey, expiredMs);
 
         // 성공 -> 토큰 발행
         return token;

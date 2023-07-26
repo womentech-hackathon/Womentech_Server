@@ -1,4 +1,4 @@
-package com.womentech.server.config;
+package com.womentech.server.configuration;
 
 import org.springdoc.core.properties.SwaggerUiConfigParameters;
 import org.springdoc.core.properties.SwaggerUiConfigProperties;

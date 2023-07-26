@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class BookmarkResponse {
-    Long id;
     int number;
 }

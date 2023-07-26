@@ -34,18 +34,26 @@ public class GoalService {
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
     private final TaskRepository taskRepository;
-    private final DailyTaskRepository dailyTaskRepository;
 
     public GoalProgressResponse getProgressGoal(Long userId) {
         List<Goal> goals = goalRepository.findByUserIdAndStatus(userId, PROGRESS);
         if (goals.isEmpty()) {
             throw new AppException(ErrorCode.GOAL_NOT_FOUND, "달성 중인 목표가 없습니다.");
         }
-        List<Task> tasks = taskRepository.findByGoalId(goals.get(0).getId());
+        Goal goal = goals.get(0);
+        List<Task> tasks = taskRepository.findByGoalId(goal.getId());
         List<TaskProgressResponse> dto = tasks.stream()
-                .map(task -> new TaskProgressResponse(task.getName(), task.getDays(), task.getStatus()))
+                .map(task -> new TaskProgressResponse(
+                        task.getId(),
+                        task.getName(),
+                        task.getDays(),
+                        task.getStatus()))
                 .collect(Collectors.toList());
-        return new GoalProgressResponse(goals.get(0).getName(), goals.get(0).getStartDate(), dto);
+        return new GoalProgressResponse(
+                goal.getId(),
+                goal.getName(),
+                goal.getStartDate(),
+                dto);
     }
 
     public List<GoalCompletedResponse> getCompletedGoals(Long userId) {
@@ -57,21 +65,26 @@ public class GoalService {
         for (Goal goal : goals) {
             List<Task> tasks = taskRepository.findByGoalId(goal.getId());
             List<TaskCompletedResponse> dto = tasks.stream()
-                    .map(task -> new TaskCompletedResponse(task.getName(), task.getDays(), task.getStartDate(), task.getEndDate()))
+                    .map(task -> new TaskCompletedResponse(
+                            task.getId(),
+                            task.getName(),
+                            task.getDays(),
+                            task.getStartDate(),
+                            task.getEndDate()))
                     .collect(Collectors.toList());
             result.add(new GoalCompletedResponse(
+                    goal.getId(),
                     goal.getName(),
                     goal.getStartDate(),
                     goal.getEndDate(),
-                    dto
-            ));
+                    dto));
         }
         return result;
     }
 
     @Transactional
-    public Long addGoal(GoalAddRequest dto) {
-        User user = userRepository.findById(dto.getUserId()).orElse(null);
+    public Long addGoal(Long userId, GoalAddRequest dto) {
+        User user = userRepository.findById(userId).orElse(null);
         Goal goal = Goal.builder()
                 .user(user)
                 .name(dto.getName())

@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +42,8 @@ public class GoalController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public GoalProgressResponse getProgressGoal(@Parameter Long userId) {
+    public GoalProgressResponse getProgressGoal(Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
         return goalService.getProgressGoal(userId);
     }
 
@@ -55,7 +57,8 @@ public class GoalController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public List<GoalCompletedResponse> getCompletedGoal(@Parameter Long userId) {
+    public List<GoalCompletedResponse> getCompletedGoal(Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
         return goalService.getCompletedGoals(userId);
     }
 
@@ -69,12 +72,13 @@ public class GoalController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseEntity<?> addGoal(@RequestBody GoalAddRequest dto) {
+    public ResponseEntity<?> addGoal(@RequestBody GoalAddRequest dto, Authentication authentication) {
         if (dto.getName() == null) {
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse(ErrorCode.BAD_REQUEST.name(), "이름을 입력해주세요."));
         }
-        Long goal_id = goalService.addGoal(dto);
+        Long userId = Long.valueOf(authentication.getName());
+        Long goal_id = goalService.addGoal(userId, dto);
         for (TaskRequest task : dto.getTasks()) {
             taskService.addTask(goal_id, new TaskRequest(task.getName(), task.getDays()));
         }

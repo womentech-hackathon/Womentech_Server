@@ -1,4 +1,4 @@
-package com.womentech.server.config;
+package com.womentech.server.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

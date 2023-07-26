@@ -12,6 +12,7 @@ import java.util.EnumSet;
 @NoArgsConstructor
 @Getter
 public class TaskCompletedResponse {
+    private Long id;
     private String name;
     private EnumSet<Day> days;
     private LocalDate startDate;

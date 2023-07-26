@@ -10,7 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class GoalAddRequest {
-    private Long userId;
     private List<TaskRequest> tasks;
     private String name;
 }

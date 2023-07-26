@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class GoalCompletedResponse {
+    private Long id;
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
