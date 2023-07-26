@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -14,8 +15,8 @@ import java.util.List;
 public class DailyTaskService {
     private final DailyTaskRepository dailyTaskRepository;
 
-    public List<DailyTask> findDailyTasks(Long goal_id) {
-        return dailyTaskRepository.findByGoalId(goal_id);
+    public List<DailyTask> findDailyTasksByDate(Long goal_id, LocalDate date) {
+        return dailyTaskRepository.findByGoalIdAndDate(goal_id, date);
     }
 
     @Transactional

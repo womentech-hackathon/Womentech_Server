@@ -8,6 +8,7 @@ import com.womentech.server.exception.ErrorResponse;
 import com.womentech.server.service.DailyTaskService;
 import com.womentech.server.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +37,8 @@ public class DailyTaskController {
     @ApiResponse(responseCode = "200", description = "daily 실천 사항 목록",
             content = @Content(mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = DailyTaskResponse.class))))
-    public List<DailyTaskResponse> getDailyTasks(@PathVariable Long goal_id) {
-        List<DailyTask> dailyTasks = dailyTaskService.findDailyTasks(goal_id);
+    public List<DailyTaskResponse> getDailyTasks(@PathVariable Long goal_id, @Parameter LocalDate date) {
+        List<DailyTask> dailyTasks = dailyTaskService.findDailyTasksByDate(goal_id, date);
         List<DailyTaskResponse> dto = dailyTasks.stream()
                 .map(dailyTask -> {
                     Task task = taskService.findTask(dailyTask.getTaskId());
