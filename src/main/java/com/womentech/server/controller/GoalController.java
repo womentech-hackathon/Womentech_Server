@@ -10,7 +10,6 @@ import com.womentech.server.exception.ErrorResponse;
 import com.womentech.server.service.GoalService;
 import com.womentech.server.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,7 +32,7 @@ public class GoalController {
     private final TaskService taskService;
 
     @GetMapping("/progress")
-    @Operation(summary = "목표 조회(달성 중)", description = "달성 중인 목표를 조회합니다.")
+    @Operation(summary = "목표 조회 (달성 중)", description = "달성 중인 목표를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "OK", description = "달성 중인 목표 조회를 성공했습니다.",
                     content = @Content(mediaType = "application/json",
@@ -48,7 +47,7 @@ public class GoalController {
     }
 
     @GetMapping("/completed")
-    @Operation(summary = "목표 조회(달성 완료)", description = "달성 완료한 목표를 조회합니다.")
+    @Operation(summary = "목표 조회 (달성 완료)", description = "달성 완료한 목표를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "OK", description = "달성 완료한 목표 조회를 성공했습니다.",
                     content = @Content(mediaType = "application/json",

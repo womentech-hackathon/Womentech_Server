@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,5 +58,13 @@ public class UserController {
         String token = userService.login(dto.getIdentifier(), dto.getPassword());
         return ResponseEntity.ok()
                 .body(new ErrorResponse(HttpStatus.OK.name(), token));
+    }
+
+    @DeleteMapping("/users")
+    public ResponseEntity<?> deleteUser(Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
+        userService.deleteUserById(userId);
+        return ResponseEntity.ok()
+                .body(new ErrorResponse(HttpStatus.OK.name(), "회원탈퇴를 성공했습니다."));
     }
 }

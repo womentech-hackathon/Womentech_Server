@@ -52,4 +52,8 @@ public class UserService {
         // 성공 -> 토큰 발행
         return token;
     }
+
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
+    }
 }

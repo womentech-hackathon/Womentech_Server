@@ -27,7 +27,7 @@ public class AuthenticationConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeHttpRequests()
-                .requestMatchers("/login", "/join").permitAll()
+                .requestMatchers("/", "/login", "/join").permitAll()
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger UI 예외 추가
                 .requestMatchers("/**").authenticated()
                 .and()
