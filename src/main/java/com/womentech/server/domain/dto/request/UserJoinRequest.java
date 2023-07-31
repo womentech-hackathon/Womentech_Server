@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class UserJoinRequest {
-    private String identifier;
+    private String username;
     private String name;
     private String password;
 }

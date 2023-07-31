@@ -2,69 +2,65 @@ package com.womentech.server.controller;
 
 import com.womentech.server.domain.dto.request.UserJoinRequest;
 import com.womentech.server.domain.dto.request.UserLoginRequest;
-import com.womentech.server.exception.ErrorResponse;
+import com.womentech.server.domain.dto.request.UserNameRequest;
+import com.womentech.server.domain.dto.request.UserPasswordRequest;
+import com.womentech.server.exception.dto.DataResponse;
 import com.womentech.server.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "user", description = "사용자 API")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
 
     @PostMapping("/join")
     @Operation(summary = "회원가입", description = "회원가입합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "OK", description = "회원가입을 성공했습니다.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "IDENTIFIER_DUPLICATED", description = "이미 존재하는 아이디입니다.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    public ResponseEntity<?> join(@RequestBody UserJoinRequest dto) {
-        userService.join(dto.getIdentifier(), dto.getName(), dto.getPassword());
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "회원가입을 성공했습니다."));
+    public DataResponse<Object> join(@RequestBody UserJoinRequest userJoinRequest) {
+        userService.join(userJoinRequest.getUsername(), userJoinRequest.getName(), userJoinRequest.getPassword());
+
+        return DataResponse.empty();
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "로그인합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "OK", description = "token 값",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "IDENTIFIER_NOT_FOUND", description = "존재하지 않는 아이디입니다.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "INVALID_PASSWORD", description = "패스워드를 잘못 입력했습니다.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    public ResponseEntity<?> login(@RequestBody UserLoginRequest dto) {
-        String token = userService.login(dto.getIdentifier(), dto.getPassword());
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), token));
+    public DataResponse<Object> login(@RequestBody UserLoginRequest userLoginRequest) {
+        return DataResponse.of(userService.login(userLoginRequest.getUsername(), userLoginRequest.getPassword()));
     }
 
-    @DeleteMapping("/users")
-    public ResponseEntity<?> deleteUser(Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
-        userService.deleteUserById(userId);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "회원탈퇴를 성공했습니다."));
+    @PostMapping("/logout")
+    public DataResponse<Object> logout() {
+        // Todo: 로그아웃 구현
+
+        return DataResponse.empty();
+    }
+
+    @DeleteMapping("/withdrawal")
+    public DataResponse<Object> deleteUser(Authentication authentication) {
+        String username = authentication.getName();
+        userService.deleteUser(username);
+
+        return DataResponse.empty();
+    }
+
+    @PatchMapping("/name/edit")
+    public DataResponse<Object> updateName(@RequestBody UserNameRequest userNameRequest, Authentication authentication) {
+        String username = authentication.getName();
+        userService.editName(username, userNameRequest.getName());
+
+        return DataResponse.empty();
+    }
+
+    @PatchMapping("/password/edit")
+    public DataResponse<Object> updatePassword(@RequestBody UserPasswordRequest userPasswordRequest, Authentication authentication) {
+        String username = authentication.getName();
+        userService.editPassword(username, userPasswordRequest.getPassword());
+
+        return DataResponse.empty();
     }
 }

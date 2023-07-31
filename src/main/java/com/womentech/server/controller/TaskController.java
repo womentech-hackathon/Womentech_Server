@@ -1,19 +1,27 @@
 package com.womentech.server.controller;
 
+import com.womentech.server.domain.Bookmark;
+import com.womentech.server.domain.CompletionStatus;
+import com.womentech.server.domain.Task;
 import com.womentech.server.domain.dto.request.TaskRequest;
-import com.womentech.server.exception.ErrorCode;
-import com.womentech.server.exception.ErrorResponse;
+import com.womentech.server.domain.dto.response.BookmarkResponse;
+import com.womentech.server.domain.dto.response.TaskResponse;
+import com.womentech.server.exception.Code;
+import com.womentech.server.exception.GeneralException;
+import com.womentech.server.exception.dto.DataResponse;
+import com.womentech.server.exception.dto.Response;
 import com.womentech.server.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name = "task", description = "실천 사항 API")
 @RestController
@@ -22,76 +30,70 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController {
     private final TaskService taskService;
 
-    @PostMapping()
-    @Operation(summary = "실천 사항 추가", description = "목표의 실천 사항을 추가합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "OK", description = "실천 사항 추가를 성공했습니다.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "BAD_REQUEST", description = "이름을 입력해주세요.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    public ResponseEntity<?> addTask(@PathVariable Long goal_id, @RequestBody TaskRequest dto) {
-        if (dto.getName() == null) {
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse(ErrorCode.BAD_REQUEST.name(), "이름을 입력해주세요."));
-        }
-        taskService.addTask(goal_id, dto);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "실천 사항 추가를 성공했습니다."));
+    @GetMapping()
+    @Operation(summary = "실천 사항 조회", description = "실천 사항을 조회합니다.")
+    public DataResponse<Object> getTasks(@PathVariable("goal_id") Long goalId) {
+        List<Task> tasks = taskService.findTasks(goalId);
+        List<TaskResponse> taskResponses = tasks.stream()
+                .map(task -> new TaskResponse(
+                        task.getName(),
+                        task.getStartDate(),
+                        task.getDays()))
+                .collect(Collectors.toList());
+
+        return DataResponse.of(taskResponses);
     }
 
-    @PatchMapping("/{task_id}")
-    @Operation(summary = "실천 사항 수정", description = "목표의 실천 사항을 수정합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "OK", description = "실천 사항 수정을 성공했습니다.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "BAD_REQUEST", description = "이름을 입력해주세요.",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    public ResponseEntity<?> updateTask(@PathVariable Long task_id, @RequestBody TaskRequest dto) {
-        if (dto.getName() == null) {
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse(ErrorCode.BAD_REQUEST.name(), "이름을 입력해주세요."));
+    @GetMapping("/count")
+    @Operation(summary = "실천 사항 개수 조회", description = "실천 사항 개수를 조회합니다.")
+    public DataResponse<Object> countTasks(@PathVariable("goal_id") Long goalId, @Parameter CompletionStatus status) {
+        return DataResponse.of(taskService.countTasks(goalId, status));
+    }
+
+    @PostMapping()
+    @Operation(summary = "실천 사항 추가", description = "실천 사항을 추가합니다.")
+    public DataResponse<Object> addTask(@PathVariable("goal_id") Long goalId, @RequestBody List<TaskRequest> taskRequests) {
+        // Task에 이름이 있는지 확인
+        for (TaskRequest taskRequest : taskRequests) {
+            if (taskRequest.getName() == null) {
+                throw new GeneralException(Code.BAD_REQUEST, "Task name is empty");
+            }
         }
-        taskService.updateTask(task_id, dto);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "실천 사항 수정을 성공했습니다."));
+
+        for (TaskRequest taskRequest : taskRequests) {
+            taskService.addTask(goalId, taskRequest);
+        }
+
+        return DataResponse.empty();
+    }
+
+    @PatchMapping("/{task_id}/edit")
+    @Operation(summary = "실천 사항 수정", description = "실천 사항을 수정합니다.")
+    public DataResponse<Object> updateTask(@PathVariable("task_id") Long taskId, @RequestBody TaskRequest taskRequest) {
+        if (taskRequest.getName() == null) {
+            throw new GeneralException(Code.BAD_REQUEST, "Task name is empty");
+        }
+        taskService.updateTask(taskId, taskRequest);
+
+        return DataResponse.empty();
     }
 
     @DeleteMapping("/{task_id}")
-    @Operation(summary = "실천 사항 삭제", description = "목표의 실천 사항을 삭제합니다.")
+    @Operation(summary = "실천 사항 삭제", description = "실천 사항을 삭제합니다.")
     @ApiResponse(responseCode = "OK", description = "실천 사항 삭제를 성공했습니다.",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<?> deleteTask(@PathVariable Long task_id) {
-        taskService.deleteTask(task_id);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "실천 사항 삭제를 성공했습니다."));
+                    schema = @Schema(implementation = Response.class)))
+    public DataResponse<Object> deleteTask(@PathVariable("task_id") Long taskId) {
+        taskService.deleteTask(taskId);
+
+        return DataResponse.empty();
     }
 
-    @PatchMapping("/{task_id}/complete")
-    @Operation(summary = "실천 사항 완료", description = "목표의 실천 사항을 완료합니다.")
-    @ApiResponse(responseCode = "OK", description = "실천 사항 완료를 성공했습니다.",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<?> completeTask(@PathVariable Long task_id) {
-        taskService.completeTask(task_id);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "실천 사항 완료를 성공했습니다."));
-    }
+    @PatchMapping("/{task_id}")
+    @Operation(summary = "실천 사항 완료/완료 취소", description = "목표의 실천 사항을 완료/완료 취소합니다.")
+    public DataResponse<Object> setTaskStatus(@PathVariable("task_id") Long taskId, @Parameter CompletionStatus status) {
+        taskService.setTaskStatus(taskId, status);
 
-    @PatchMapping("/{task_id}/uncomplete")
-    @Operation(summary = "실천 사항 완료 취소", description = "목표의 실천 사항을 완료 취소합니다.")
-    @ApiResponse(responseCode = "OK", description = "실천 사항 완료 취소를 성공했습니다.",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<?> unCompleteTask(@PathVariable Long task_id) {
-        taskService.unCompleteTask(task_id);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "실천 사항 완료 취소를 성공했습니다."));
+        return DataResponse.empty();
     }
 }

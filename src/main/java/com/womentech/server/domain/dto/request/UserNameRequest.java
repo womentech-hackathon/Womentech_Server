@@ -1,4 +1,4 @@
-package com.womentech.server.domain.dto.response;
+package com.womentech.server.domain.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class BookmarkResponse {
-    Long id;
-    int number;
+public class UserNameRequest {
+    private String name;
 }

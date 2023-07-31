@@ -2,17 +2,12 @@ package com.womentech.server.controller;
 
 import com.womentech.server.domain.Bookmark;
 import com.womentech.server.domain.dto.response.BookmarkResponse;
-import com.womentech.server.exception.ErrorResponse;
+import com.womentech.server.exception.dto.DataResponse;
 import com.womentech.server.service.BookmarkService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,40 +22,42 @@ public class BookmarkController {
     private final BookmarkService bookmarkService;
 
     @GetMapping()
-    @Operation(summary = "교육 북마크 조회", description = "사용자의 교육 북마크를 조회합니다.")
-    @ApiResponse(responseCode = "200", description = "교육 북마크 목록",
-            content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = BookmarkResponse.class))))
-    public List<BookmarkResponse> getBookmarks(Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
-        List<Bookmark> bookmarks = bookmarkService.findBookmarks(userId);
-        List<BookmarkResponse> dto = bookmarks.stream()
-                .map(bookmark -> new BookmarkResponse(bookmark.getNumber()))
+    @Operation(summary = "찜한 교육 조회", description = "찜한 교육을 조회합니다.")
+    public DataResponse<Object> getBookmarks(Authentication authentication) {
+        String username = authentication.getName();
+        List<Bookmark> bookmarks = bookmarkService.findBookmarks(username);
+        List<BookmarkResponse> bookmarkResponses = bookmarks.stream()
+                .map(bookmark -> new BookmarkResponse(
+                        bookmark.getId(),
+                        bookmark.getNumber()))
                 .collect(Collectors.toList());
-        return dto;
+
+        return DataResponse.of(bookmarkResponses);
     }
 
-    @PostMapping("/{number}")
-    @Operation(summary = "교육 북마크 추가", description = "사용자의 교육 북마크를 추가합니다.")
-    @ApiResponse(responseCode = "OK", description = "교육 북마크 추가를 성공했습니다.",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<?> addBookmark(@PathVariable int number, Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
-        bookmarkService.addBookmark(userId, number);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "교육 북마크를 추가를 성공했습니다."));
+    @GetMapping("/count")
+    @Operation(summary = "찜한 교육 개수 조회", description = "찜한 교육 개수를 조회합니다.")
+    public DataResponse<Object> countBookmarks(Authentication authentication) {
+        String username = authentication.getName();
+
+        return DataResponse.of(bookmarkService.countBookmarks(username));
     }
 
-    @DeleteMapping("/{number}")
-    @Operation(summary = "교육 북마크 삭제", description = "사용자의 교육 북마크를 삭제합니다.")
-    @ApiResponse(responseCode = "OK", description = "교육 북마크 삭제를 성공했습니다.",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponse.class)))
-    public ResponseEntity<?> deleteBookmark(@PathVariable int number, Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
-        bookmarkService.deleteBookmark(userId, number);
-        return ResponseEntity.ok()
-                .body(new ErrorResponse(HttpStatus.OK.name(), "교육 북마크를 삭제를 성공했습니다."));
+    @PostMapping()
+    @Operation(summary = "찜한 교육 추가", description = "찜한 교육을 추가합니다.")
+    public DataResponse<Object> addBookmark(@Parameter int number, Authentication authentication) {
+        String username = authentication.getName();
+
+        bookmarkService.addBookmark(username, number);
+
+        return DataResponse.empty();
+    }
+
+    @DeleteMapping("/{bookmark_id}")
+    @Operation(summary = "찜한 교육 삭제", description = "찜한 교육을 삭제합니다.")
+    public DataResponse<Object> deleteBookmark(@PathVariable("bookmark_id") Long bookmarkId) {
+        bookmarkService.deleteBookmark(bookmarkId);
+
+        return DataResponse.empty();
     }
 }

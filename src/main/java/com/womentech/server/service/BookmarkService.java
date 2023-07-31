@@ -18,13 +18,19 @@ public class BookmarkService {
     private final UserRepository userRepository;
     private final BookmarkRepository bookmarkRepository;
 
-    public List<Bookmark> findBookmarks(Long userId) {
-        return bookmarkRepository.findByUserIdOrderByIdDesc(userId);
+    public List<Bookmark> findBookmarks(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        return bookmarkRepository.findByUserIdOrderById(user.getId());
+    }
+
+    public int countBookmarks(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        return bookmarkRepository.countByUserId(user.getId());
     }
 
     @Transactional
-    public void addBookmark(Long userId, int number) {
-        Optional<User> user = userRepository.findById(userId);
+    public void addBookmark(String username, int number) {
+        Optional<User> user = userRepository.findByUsername(username);
         user.ifPresent(u -> {
             Bookmark bookmark = Bookmark.builder()
                     .user(u)
@@ -35,7 +41,7 @@ public class BookmarkService {
     }
 
     @Transactional
-    public void deleteBookmark(Long userId, int number) {
-        bookmarkRepository.deleteByUserIdAndNumber(userId, number);
+    public void deleteBookmark(Long bookmarkId) {
+        bookmarkRepository.deleteById(bookmarkId);
     }
 }

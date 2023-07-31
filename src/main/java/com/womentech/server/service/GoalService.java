@@ -9,9 +9,8 @@ import com.womentech.server.domain.dto.response.GoalCompletedResponse;
 import com.womentech.server.domain.dto.response.GoalProgressResponse;
 import com.womentech.server.domain.dto.response.TaskCompletedResponse;
 import com.womentech.server.domain.dto.response.TaskProgressResponse;
-import com.womentech.server.exception.AppException;
-import com.womentech.server.exception.ErrorCode;
-import com.womentech.server.repository.DailyTaskRepository;
+import com.womentech.server.exception.GeneralException;
+import com.womentech.server.exception.Code;
 import com.womentech.server.repository.GoalRepository;
 import com.womentech.server.repository.TaskRepository;
 import com.womentech.server.repository.UserRepository;
@@ -35,10 +34,11 @@ public class GoalService {
     private final GoalRepository goalRepository;
     private final TaskRepository taskRepository;
 
-    public GoalProgressResponse getProgressGoal(Long userId) {
-        List<Goal> goals = goalRepository.findByUserIdAndStatus(userId, PROGRESS);
+    public GoalProgressResponse getProgressGoal(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        List<Goal> goals = goalRepository.findByUserIdAndStatus(user.getId(), PROGRESS);
         if (goals.isEmpty()) {
-            throw new AppException(ErrorCode.GOAL_NOT_FOUND, "달성 중인 목표가 없습니다.");
+            throw new GeneralException(Code.NOT_FOUND, "달성 중인 목표가 없습니다.");
         }
         Goal goal = goals.get(0);
         List<Task> tasks = taskRepository.findByGoalId(goal.getId());
@@ -56,11 +56,12 @@ public class GoalService {
                 dto);
     }
 
-    public List<GoalCompletedResponse> getCompletedGoals(Long userId) {
+    public List<GoalCompletedResponse> getCompletedGoals(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
         List<GoalCompletedResponse> result = new ArrayList<>();
-        List<Goal> goals = goalRepository.findByUserIdAndStatus(userId, COMPLETE);
+        List<Goal> goals = goalRepository.findByUserIdAndStatus(user.getId(), COMPLETE);
         if (goals.isEmpty()) {
-            throw new AppException(ErrorCode.GOAL_NOT_FOUND, "달성 완료한 목표가 없습니다.");
+            throw new GeneralException(Code.NOT_FOUND, "달성 완료한 목표가 없습니다.");
         }
         for (Goal goal : goals) {
             List<Task> tasks = taskRepository.findByGoalId(goal.getId());
@@ -83,8 +84,8 @@ public class GoalService {
     }
 
     @Transactional
-    public Long addGoal(Long userId, GoalAddRequest dto) {
-        User user = userRepository.findById(userId).orElse(null);
+    public Long addGoal(String username, GoalAddRequest dto) {
+        User user = userRepository.findByUsername(username).orElse(null);
         Goal goal = Goal.builder()
                 .user(user)
                 .name(dto.getName())
@@ -96,14 +97,25 @@ public class GoalService {
     }
 
     @Transactional
-    public void updateGoal(Long goal_id, GoalUpdateRequest dto) {
-        Goal goal = goalRepository.findById(goal_id).orElse(null);
+    public void updateGoal(Long goalId, GoalUpdateRequest dto) {
+        Goal goal = goalRepository.findById(goalId).orElse(null);
         goal.setName(dto.getName());
         goalRepository.save(goal);
     }
 
     @Transactional
-    public void deleteGoal(Long goal_id) {
-        goalRepository.deleteById(goal_id);
+    public void deleteGoal(Long goalId) {
+        goalRepository.deleteById(goalId);
+    }
+
+    @Transactional
+    public void setGoalStatus(Long goalId) {
+        Goal goal = goalRepository.findById(goalId).orElse(null);
+        goal.complete();
+
+        List<Task> tasks = taskRepository.findByGoalId(goalId);
+        for (Task task : tasks) {
+            task.complete();
+        }
     }
 }

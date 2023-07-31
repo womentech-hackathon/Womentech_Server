@@ -1,5 +1,6 @@
 package com.womentech.server.service;
 
+import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.DailyTask;
 import com.womentech.server.domain.Goal;
 import com.womentech.server.domain.Task;
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+import static com.womentech.server.domain.CompletionStatus.COMPLETE;
 import static com.womentech.server.domain.CompletionStatus.PROGRESS;
 
 @Service
@@ -24,13 +27,21 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final DailyTaskRepository dailyTaskRepository;
 
-    public Task findTask(Long task_id) {
-        return taskRepository.findById(task_id).orElse(null);
+    public List<Task> findTasks(Long goalId) {
+        return taskRepository.findByGoalId(goalId);
+    }
+
+    public Task findTask(Long taskId) {
+        return taskRepository.findById(taskId).orElse(null);
+    }
+
+    public int countTasks(Long goalId, CompletionStatus status) {
+        return taskRepository.countByGoalIdAndStatus(goalId, status);
     }
 
     @Transactional
-    public void addTask(Long goal_id, TaskRequest dto) {
-        Optional<Goal> goal = goalRepository.findById(goal_id);
+    public void addTask(Long goalId, TaskRequest dto) {
+        Optional<Goal> goal = goalRepository.findById(goalId);
         goal.ifPresent(g -> {
             Task task = Task.builder()
                     .goal(goal.orElse(null))
@@ -52,34 +63,29 @@ public class TaskService {
     }
 
     @Transactional
-    public void updateTask(Long task_id, TaskRequest dto) {
-        Task task = taskRepository.findById(task_id).orElse(null);
-        if (dto.getName() != null) {
-            task.setName(dto.getName());
+    public void updateTask(Long taskId, TaskRequest taskRequest) {
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if (taskRequest.getName() != null) {
+            task.setName(taskRequest.getName());
         }
-        if (dto.getDays() != null) {
-            task.setDays(dto.getDays());
+        if (taskRequest.getDays() != null) {
+            task.setDays(taskRequest.getDays());
         }
-        taskRepository.save(task);
     }
 
     @Transactional
-    public void deleteTask(Long task_id) {
-        taskRepository.deleteById(task_id);
-        dailyTaskRepository.deleteByTaskIdAndDate(task_id, LocalDate.now());
+    public void deleteTask(Long taskId) {
+        taskRepository.deleteById(taskId);
+        dailyTaskRepository.deleteByTaskIdAndDate(taskId, LocalDate.now());
     }
 
     @Transactional
-    public void completeTask(Long task_id) {
+    public void setTaskStatus(Long task_id, CompletionStatus status) {
         Task task = taskRepository.findById(task_id).orElse(null);
-        task.complete();
-        taskRepository.save(task);
-    }
-
-    @Transactional
-    public void unCompleteTask(Long task_id) {
-        Task task = taskRepository.findById(task_id).orElse(null);
-        task.unComplete();
-        taskRepository.save(task);
+        if (status == COMPLETE) {
+            task.complete();
+        } else {
+            task.unComplete();
+        }
     }
 }

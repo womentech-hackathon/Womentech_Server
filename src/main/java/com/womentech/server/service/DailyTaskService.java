@@ -1,5 +1,6 @@
 package com.womentech.server.service;
 
+import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.DailyTask;
 import com.womentech.server.repository.DailyTaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,27 +10,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.womentech.server.domain.CompletionStatus.COMPLETE;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DailyTaskService {
     private final DailyTaskRepository dailyTaskRepository;
 
-    public List<DailyTask> findDailyTasksByDate(Long goal_id, LocalDate date) {
-        return dailyTaskRepository.findByGoalIdAndDate(goal_id, date);
+    public List<DailyTask> findDailyTasks(Long goalId, LocalDate date) {
+        return dailyTaskRepository.findByGoalIdAndDate(goalId, date);
     }
 
     @Transactional
-    public void completeDailyTask(Long daily_task_id) {
-        DailyTask dailyTask = dailyTaskRepository.findById(daily_task_id).orElse(null);
-        dailyTask.complete();
-        dailyTaskRepository.save(dailyTask);
-    }
-
-    @Transactional
-    public void unCompleteDailyTask(Long daily_task_id) {
-        DailyTask dailyTask = dailyTaskRepository.findById(daily_task_id).orElse(null);
-        dailyTask.unComplete();
-        dailyTaskRepository.save(dailyTask);
+    public void setDailyTaskStatus(Long dailyTaskId, CompletionStatus status) {
+        DailyTask dailyTask = dailyTaskRepository.findById(dailyTaskId).orElse(null);
+        if (status == COMPLETE) {
+            dailyTask.complete();
+        } else {
+            dailyTask.unComplete();
+        }
     }
 }

@@ -26,7 +26,7 @@ public class Goal {
     @Column(name = "goal_id")
     private Long id;
 
-    @OneToOne(fetch = LAZY, cascade = ALL)
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -49,10 +49,5 @@ public class Goal {
     public void complete() {
         this.endDate = LocalDate.now();
         this.status = COMPLETE;
-    }
-
-    public void unComplete() {
-        this.endDate = null;
-        this.status = PROGRESS;
     }
 }

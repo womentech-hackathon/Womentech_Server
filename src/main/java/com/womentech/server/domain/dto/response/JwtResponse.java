@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class BookmarkResponse {
-    Long id;
-    int number;
+public class JwtResponse {
+    private String accessJwt;
+    private String refreshJwt;
 }
