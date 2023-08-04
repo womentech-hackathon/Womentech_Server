@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 
 import static com.womentech.server.domain.CompletionStatus.COMPLETE;
 import static com.womentech.server.domain.CompletionStatus.PROGRESS;

@@ -30,10 +30,10 @@ public class Goal {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "goal", cascade = REMOVE)
+    @OneToMany(mappedBy = "goal", cascade = REMOVE, fetch = LAZY)
     private List<Task> tasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "goal", cascade = REMOVE)
+    @OneToMany(mappedBy = "goal", cascade = REMOVE, fetch = LAZY)
     private List<DailyTask> dailyTasks = new ArrayList<>();
 
     private String name;

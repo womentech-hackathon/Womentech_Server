@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: my-redis
+    ports:
+      - "6379:6379"
+
+  spring-boot-app:
+    image: soyeonii/womentech-server:latest
+    container_name: my-spring-boot-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis

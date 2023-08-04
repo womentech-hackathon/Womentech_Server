@@ -1,6 +1,8 @@
 package com.womentech.server.configuration;
 
 import com.womentech.server.service.UserDetailsServiceImpl;
+import com.womentech.server.util.JwtUtil;
+import com.womentech.server.util.RedisUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +21,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-    private final JwtProvider jwtProvider;
+    private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Override
@@ -37,15 +40,22 @@ public class JwtFilter extends OncePerRequestFilter {
         // Token 꺼내기
         String token = authorization.split(" ")[1];
 
+        // 로그아웃 되었는지 확인
+        if (redisUtil.hasKeyBlackList(token)) {
+            log.error("로그아웃 되었습니다.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // Token Expired 되었는지 확인
-        if (jwtProvider.isJwtExpired(token)) {
+        if (jwtUtil.isTokenExpired(token)) {
             log.error("Token이 만료되었습니다.");
             filterChain.doFilter(request, response);
             return;
         }
 
         // username Token에서 꺼내기
-        String username = jwtProvider.getUsername(token);
+        String username = jwtUtil.getUsername(token);
         log.info("Username : {}", username);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

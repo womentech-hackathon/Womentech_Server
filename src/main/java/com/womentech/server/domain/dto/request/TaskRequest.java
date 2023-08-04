@@ -1,6 +1,5 @@
 package com.womentech.server.domain.dto.request;
 
-import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.Day;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,8 @@
 package com.womentech.server.configuration;
 
 import com.womentech.server.service.UserDetailsServiceImpl;
+import com.womentech.server.util.JwtUtil;
+import com.womentech.server.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtProvider jwtProvider;
+    private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
@@ -35,9 +38,9 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()   // Swagger UI 예외 추가
                 .anyRequest().authenticated()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용하지 않음
                 .and()
-                .addFilterBefore(new JwtFilter(jwtProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class) // JWT 적용
+                .addFilterBefore(new JwtFilter(jwtUtil, redisUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class) // JWT 적용
                 .build();
     }
 }

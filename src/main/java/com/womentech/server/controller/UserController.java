@@ -34,8 +34,11 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public DataResponse<Object> logout() {
+    public DataResponse<Object> logout(@RequestHeader("Authorization") String authorization, Authentication authentication) {
         // Todo: 로그아웃 구현
+        String username = authentication.getName();
+        String token = authorization.split(" ")[1];
+        userService.logout(username, token);
 
         return DataResponse.empty();
     }

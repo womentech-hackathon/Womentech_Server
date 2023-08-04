@@ -1,10 +1,8 @@
 package com.womentech.server.controller;
 
-import com.womentech.server.domain.Bookmark;
 import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.Task;
 import com.womentech.server.domain.dto.request.TaskRequest;
-import com.womentech.server.domain.dto.response.BookmarkResponse;
 import com.womentech.server.domain.dto.response.TaskResponse;
 import com.womentech.server.exception.Code;
 import com.womentech.server.exception.GeneralException;

@@ -30,6 +30,6 @@ public class User {
     @OneToOne(mappedBy = "user", fetch = LAZY)
     private Goal goal;
 
-    @OneToMany(mappedBy = "user", cascade = ALL)
+    @OneToMany(mappedBy = "user", cascade = ALL, fetch = LAZY)
     private List<Bookmark> bookmarks = new ArrayList<>();
 }

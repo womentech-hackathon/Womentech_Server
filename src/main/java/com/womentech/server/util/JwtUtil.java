@@ -1,25 +1,22 @@
-package com.womentech.server.configuration;
+package com.womentech.server.util;
 
-import com.womentech.server.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JwtProvider {
-    private final RedisTemplate<String, String> redisTemplate;
-    private final UserDetailsServiceImpl userDetailsService;
+public class JwtUtil {
+    private final RedisUtil redisUtil;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -33,27 +30,20 @@ public class JwtProvider {
     /**
      * Access 토큰 생성
      */
-    public String createAccessJwt(Authentication authentication){
+    public String createAccessToken(Authentication authentication){
         String username = authentication.getName();
 
-        return createJwt(username, secretKey, accessExpireMs);
+        return createToken(username, secretKey, accessExpireMs);
     }
 
     /**
      * Refresh 토큰 생성
      */
-    public String createRefreshJwt(Authentication authentication){
+    public String createRefreshToken(Authentication authentication){
         String username = authentication.getName();
+        String refreshToken = createToken(username, secretKey, refreshExpireMs);
 
-        String refreshToken = createJwt(username, secretKey, refreshExpireMs);
-
-        // redis에 저장
-        redisTemplate.opsForValue().set(
-                authentication.getName(),
-                refreshToken,
-                refreshExpireMs,
-                TimeUnit.MILLISECONDS
-        );
+        redisUtil.set(authentication.getName(), refreshToken, refreshExpireMs);
 
         return refreshToken;
     }
@@ -61,7 +51,7 @@ public class JwtProvider {
     /**
      * 토큰 생성
      */
-    public String createJwt(String username, String secretKey, long expireMs) {
+    public String createToken(String username, String secretKey, long expireMs) {
         Claims claims = Jwts.claims();
         claims.put("username", username);
 
@@ -87,12 +77,26 @@ public class JwtProvider {
     /**
      * 토큰이 만료되었는지 확인
      */
-    public boolean isJwtExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody()
                 .getExpiration()
                 .before(new Date());
+    }
+
+    // 토큰의 만료 날짜 얻기
+    public Date getExpiration(String token) {
+        return getClaim(token, Claims::getExpiration);
+    }
+
+    // 토큰으로부터 클레임(claim) 얻기
+    public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        return claimsResolver.apply(claims);
     }
 }
