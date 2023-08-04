@@ -58,8 +58,6 @@ jobs:
         username: ec2-user
         key: ${{ secrets.PRIVATE_KEY }} # pem key
         script: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}
-          docker stop $(docker ps -a -q)
-          docker-compose up -d
-          docker rm $(docker ps --filter 'status=exited' -a -q)
+          docker-compose up --build -d
+          docker container prune -a -f
           docker image prune -a -f

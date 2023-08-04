@@ -2,15 +2,25 @@ version: '3.8'
 
 services:
   redis:
-    image: redis:latest
     container_name: my-redis
+    image: redis:latest
+    restart: always
     ports:
       - "6379:6379"
+    networks:
+      - backend-net
 
   spring-boot-app:
-    image: soyeonii/womentech-server:latest
     container_name: my-spring-boot-app
+    image: soyeonii/womentech-server:latest
+    restart: always
     ports:
       - "8080:8080"
     depends_on:
       - redis
+    networks:
+      - backend-net
+
+networks:
+  backend-net:
+    external: true
