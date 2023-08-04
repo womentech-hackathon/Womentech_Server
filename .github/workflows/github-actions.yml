@@ -25,8 +25,8 @@ jobs:
       
     - name: Make application.yml
       run: |
-        mkdir ./src/main/resources
-        cd ./src/main/resources
+        mkdir ~/src/main/resources
+        cd ~/src/main/resources
         touch ./application.yml
         echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
         
@@ -58,6 +58,7 @@ jobs:
         username: ec2-user
         key: ${{ secrets.PRIVATE_KEY }} # pem key
         script: |
-          docker-compose up --build -d
-          docker container prune -a -f
+          cd ~
+          docker rm -f $(docker ps -qa)
+          docker-compose up -d
           docker image prune -a -f
