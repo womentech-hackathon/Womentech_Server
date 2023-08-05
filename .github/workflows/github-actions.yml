@@ -55,5 +55,5 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }} # pem key
           script: |
             docker-compose down
-            docker-compose up -d --remove-orphans
+            docker-compose up -d --build
             docker image prune -a -f

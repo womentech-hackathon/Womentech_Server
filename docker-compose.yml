@@ -1,25 +1,16 @@
 version: '3.8'
 
 services:
-  redis:
-    container_name: my-redis
-    image: redis:latest
-    restart: always
-    ports:
-      - "6379:6379"
-
   spring-boot-app:
     container_name: my-spring-boot-app
-    image: soyeonii/womentech-server:latest
+    image: soyeonii/womentech-server
     restart: always
     ports:
       - "8080:8080"
-    depends_on:
-      - redis
 
   nginx:
     container_name: my-nginx
-    image: nginx:latest
+    image: nginx
     restart: always
     ports:
       - "80:80"
