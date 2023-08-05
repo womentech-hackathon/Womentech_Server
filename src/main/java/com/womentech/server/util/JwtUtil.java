@@ -43,7 +43,7 @@ public class JwtUtil {
         String username = authentication.getName();
         String refreshToken = createToken(username, secretKey, refreshExpireMs);
 
-        redisUtil.set(authentication.getName(), refreshToken, refreshExpireMs);
+        redisUtil.set(username, refreshToken, refreshExpireMs);
 
         return refreshToken;
     }
