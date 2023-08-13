@@ -53,9 +53,9 @@
 | :------------: | :------------: | :------------: | :------------: |
 | **Plan** | 김효진 |  |  |  
 | **Design** | 이연재 |  |  |
-| **iOS** | 임연주 | <a href="https://flutter.dev" target="_blank" rel="noreferrer"> <img src="https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="flutter" height="24"/> </a> | [@yeondooo](https://github.com/yeondooo) |
-| **AOS** | 조정미 | <a href="https://kotlinlang.org" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Kotlin-7f52ff?style=for-the-badge&logo=Kotlin&logoColor=white" alt="kotlin" height="24"/> </a> | [@jung0115](https://github.com/jung0115) |
-| **Server** | 이소연 | <a href="https://spring.io/projects/spring-boot" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" alt="spring boot" height="24"/> </a> | [@soyeonii](https://github.com/soyeonii) |
+| **iOS** | 임연주 | <a href="https://flutter.dev" target="_blank" rel="noreferrer"> <img src="https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white" alt="flutter" height="24"/> </a> | [@yeondooo](https://github.com/yeondooo) |
+| **AOS** | 조정미 | <a href="https://kotlinlang.org" target="_blank" rel="noreferrer"> <img src="https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white" alt="kotlin" height="24"/> </a> | [@jung0115](https://github.com/jung0115) |
+| **Server** | 이소연 | <a href="https://spring.io" target="_blank" rel="noreferrer"> <img src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white" alt="spring" height="24"/> </a> | [@soyeonii](https://github.com/soyeonii) |
 
 ---
 
