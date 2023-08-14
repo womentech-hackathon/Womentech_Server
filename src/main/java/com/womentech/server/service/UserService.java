@@ -1,5 +1,6 @@
 package com.womentech.server.service;
 
+import com.womentech.server.domain.dto.response.UserNameResponse;
 import com.womentech.server.util.JwtUtil;
 import com.womentech.server.domain.User;
 import com.womentech.server.domain.dto.response.JwtResponse;
@@ -88,5 +89,11 @@ public class UserService {
     public void editPassword(String username, String password) {
         User user = userRepository.findByUsername(username).orElse(null);
         user.setPassword(encoder.encode(password));
+    }
+
+    public UserNameResponse getName(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+
+        return new UserNameResponse(user.getName());
     }
 }

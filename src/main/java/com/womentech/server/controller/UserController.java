@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃합니다.")
     public DataResponse<Object> logout(@RequestHeader("Authorization") String authorization, Authentication authentication) {
-        // Todo: 로그아웃 구현
         String username = authentication.getName();
         String token = authorization.split(" ")[1];
         userService.logout(username, token);
@@ -44,6 +44,7 @@ public class UserController {
     }
 
     @DeleteMapping("/withdrawal")
+    @Operation(summary = "회원탈퇴", description = "회원을 탈퇴합니다.")
     public DataResponse<Object> deleteUser(Authentication authentication) {
         String username = authentication.getName();
         userService.deleteUser(username);
@@ -51,8 +52,17 @@ public class UserController {
         return DataResponse.empty();
     }
 
+    @GetMapping("/name")
+    @Operation(summary = "이름 조회", description = "이름을 조회합니다.")
+    public DataResponse<Object> getUserName(Authentication authentication) {
+        String username = authentication.getName();
+
+        return DataResponse.of(userService.getName(username));
+    }
+
     @PatchMapping("/name/edit")
-    public DataResponse<Object> updateName(@RequestBody UserNameRequest userNameRequest, Authentication authentication) {
+    @Operation(summary = "이름 변경", description = "이름을 변경합니다.")
+    public DataResponse<Object> updateUserName(@RequestBody UserNameRequest userNameRequest, Authentication authentication) {
         String username = authentication.getName();
         userService.editName(username, userNameRequest.getName());
 
@@ -60,7 +70,8 @@ public class UserController {
     }
 
     @PatchMapping("/password/edit")
-    public DataResponse<Object> updatePassword(@RequestBody UserPasswordRequest userPasswordRequest, Authentication authentication) {
+    @Operation(summary = "비밀번호 변경", description = "비밀번호를 변경합니다.")
+    public DataResponse<Object> updateUserPassword(@RequestBody UserPasswordRequest userPasswordRequest, Authentication authentication) {
         String username = authentication.getName();
         userService.editPassword(username, userPasswordRequest.getPassword());
 

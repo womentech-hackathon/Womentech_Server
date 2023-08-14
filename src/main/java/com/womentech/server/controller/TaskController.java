@@ -78,9 +78,6 @@ public class TaskController {
 
     @DeleteMapping("/{task_id}")
     @Operation(summary = "실천 사항 삭제", description = "실천 사항을 삭제합니다.")
-    @ApiResponse(responseCode = "OK", description = "실천 사항 삭제를 성공했습니다.",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = Response.class)))
     public DataResponse<Object> deleteTask(@PathVariable("task_id") Long taskId) {
         taskService.deleteTask(taskId);
 

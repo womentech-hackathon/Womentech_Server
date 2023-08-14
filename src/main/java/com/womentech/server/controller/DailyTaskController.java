@@ -35,6 +35,7 @@ public class DailyTaskController {
                     return new DailyTaskResponse(
                             dailyTask.getId(),
                             task.getName(),
+                            task.getStartDate(),
                             task.getDays(),
                             task.getStatus() == CompletionStatus.COMPLETE ? task.getStatus() : dailyTask.getStatus());
                 })

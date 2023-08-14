@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 @Getter
 @RequiredArgsConstructor
 public enum Code {
-    OK(0, HttpStatus.OK, "Ok"),
+    OK(0, HttpStatus.OK, "OK"),
 
     BAD_REQUEST(400, HttpStatus.BAD_REQUEST, "Bad request"),
     VALIDATION_ERROR(400, HttpStatus.BAD_REQUEST, "Validation error"),
