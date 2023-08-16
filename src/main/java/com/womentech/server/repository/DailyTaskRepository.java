@@ -13,4 +13,6 @@ public interface DailyTaskRepository extends JpaRepository<DailyTask, Long> {
     void deleteByTaskIdAndDate(Long taskId, LocalDate date);
 
     List<DailyTask> findByGoalIdAndDate(Long goalId, LocalDate date);
+
+    int countByGoalIdAndDate(Long goalId, LocalDate date);
 }

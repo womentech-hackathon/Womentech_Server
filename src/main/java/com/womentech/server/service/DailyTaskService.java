@@ -22,6 +22,10 @@ public class DailyTaskService {
         return dailyTaskRepository.findByGoalIdAndDate(goalId, date);
     }
 
+    public int countDailyTasks(Long goalId) {
+        return dailyTaskRepository.countByGoalIdAndDate(goalId, LocalDate.now());
+    }
+
     @Transactional
     public void setDailyTaskStatus(Long dailyTaskId, CompletionStatus status) {
         DailyTask dailyTask = dailyTaskRepository.findById(dailyTaskId).orElse(null);

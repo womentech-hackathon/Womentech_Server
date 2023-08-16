@@ -3,17 +3,14 @@ package com.womentech.server.controller;
 import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.Task;
 import com.womentech.server.domain.dto.request.TaskRequest;
+import com.womentech.server.domain.dto.response.CountResponse;
 import com.womentech.server.domain.dto.response.TaskResponse;
 import com.womentech.server.exception.Code;
 import com.womentech.server.exception.GeneralException;
 import com.womentech.server.exception.dto.DataResponse;
-import com.womentech.server.exception.dto.Response;
 import com.womentech.server.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +42,7 @@ public class TaskController {
     @GetMapping("/count")
     @Operation(summary = "실천 사항 개수 조회", description = "실천 사항 개수를 조회합니다.")
     public DataResponse<Object> countTasks(@PathVariable("goal_id") Long goalId, @Parameter CompletionStatus status) {
-        return DataResponse.of(taskService.countTasks(goalId, status));
+        return DataResponse.of(new CountResponse(taskService.countTasks(goalId, status)));
     }
 
     @PostMapping()

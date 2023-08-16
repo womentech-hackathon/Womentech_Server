@@ -1,9 +1,9 @@
 package com.womentech.server.controller;
 
 import com.womentech.server.domain.Bookmark;
-import com.womentech.server.domain.dto.response.BookmarkCountResponse;
 import com.womentech.server.domain.dto.response.BookmarkResponse;
 import com.womentech.server.domain.dto.response.BookmarkStatusResponse;
+import com.womentech.server.domain.dto.response.CountResponse;
 import com.womentech.server.exception.dto.DataResponse;
 import com.womentech.server.service.BookmarkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +42,7 @@ public class BookmarkController {
     public DataResponse<Object> countBookmarks(Authentication authentication) {
         String username = authentication.getName();
 
-        return DataResponse.of(new BookmarkCountResponse(bookmarkService.countBookmarks(username)));
+        return DataResponse.of(new CountResponse(bookmarkService.countBookmarks(username)));
     }
 
     @PostMapping()

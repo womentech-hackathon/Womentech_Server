@@ -91,9 +91,9 @@ public class UserService {
         user.setPassword(encoder.encode(password));
     }
 
-    public UserNameResponse getName(String username) {
+    public String getName(String username) {
         User user = userRepository.findByUsername(username).orElse(null);
 
-        return new UserNameResponse(user.getName());
+        return user.getName();
     }
 }

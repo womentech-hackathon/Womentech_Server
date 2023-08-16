@@ -3,6 +3,7 @@ package com.womentech.server.controller;
 import com.womentech.server.domain.CompletionStatus;
 import com.womentech.server.domain.DailyTask;
 import com.womentech.server.domain.Task;
+import com.womentech.server.domain.dto.response.CountResponse;
 import com.womentech.server.domain.dto.response.DailyTaskResponse;
 import com.womentech.server.exception.dto.DataResponse;
 import com.womentech.server.service.DailyTaskService;
@@ -42,6 +43,12 @@ public class DailyTaskController {
                 .collect(Collectors.toList());
 
         return DataResponse.of(dailyTaskResponses);
+    }
+
+    @GetMapping("/count")
+    @Operation(summary = "daily 실천 사항 개수 조회", description = "daily 실천 사항 개수를 조회합니다.")
+    public DataResponse<Object> countDailyTasks(@PathVariable("goal_id") Long goalId) {
+        return DataResponse.of(new CountResponse(dailyTaskService.countDailyTasks(goalId)));
     }
 
     @PatchMapping("/{daily_task_id}")

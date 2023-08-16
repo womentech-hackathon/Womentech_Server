@@ -4,6 +4,7 @@ import com.womentech.server.domain.dto.request.UserJoinRequest;
 import com.womentech.server.domain.dto.request.UserLoginRequest;
 import com.womentech.server.domain.dto.request.UserNameRequest;
 import com.womentech.server.domain.dto.request.UserPasswordRequest;
+import com.womentech.server.domain.dto.response.UserNameResponse;
 import com.womentech.server.exception.dto.DataResponse;
 import com.womentech.server.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,7 +58,7 @@ public class UserController {
     public DataResponse<Object> getUserName(Authentication authentication) {
         String username = authentication.getName();
 
-        return DataResponse.of(userService.getName(username));
+        return DataResponse.of(new UserNameResponse(userService.getName(username)));
     }
 
     @PatchMapping("/name/edit")
