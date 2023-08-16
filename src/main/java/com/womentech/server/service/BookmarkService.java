@@ -44,4 +44,10 @@ public class BookmarkService {
     public void deleteBookmark(Long bookmarkId) {
         bookmarkRepository.deleteById(bookmarkId);
     }
+
+    public boolean isBookmarked(String username, int number) {
+        User user = userRepository.findByUsername(username).orElse(null);
+
+        return bookmarkRepository.existsByUserIdAndNumber(user.getId(), number);
+    }
 }

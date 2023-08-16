@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "daily_task", description = "daily 실천 사항 API")
+@Tag(name = "daily_task", description = "데일리 실천 사항 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/goals/{goal_id}/daily-tasks")

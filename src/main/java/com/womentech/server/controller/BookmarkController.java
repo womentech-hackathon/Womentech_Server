@@ -1,7 +1,9 @@
 package com.womentech.server.controller;
 
 import com.womentech.server.domain.Bookmark;
+import com.womentech.server.domain.dto.response.BookmarkCountResponse;
 import com.womentech.server.domain.dto.response.BookmarkResponse;
+import com.womentech.server.domain.dto.response.BookmarkStatusResponse;
 import com.womentech.server.exception.dto.DataResponse;
 import com.womentech.server.service.BookmarkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Tag(name = "education", description = "교육 API")
+@Tag(name = "education bookmark", description = "교육 찜 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/education/bookmarks")
@@ -40,7 +42,7 @@ public class BookmarkController {
     public DataResponse<Object> countBookmarks(Authentication authentication) {
         String username = authentication.getName();
 
-        return DataResponse.of(bookmarkService.countBookmarks(username));
+        return DataResponse.of(new BookmarkCountResponse(bookmarkService.countBookmarks(username)));
     }
 
     @PostMapping()
@@ -59,5 +61,13 @@ public class BookmarkController {
         bookmarkService.deleteBookmark(bookmarkId);
 
         return DataResponse.empty();
+    }
+
+    @GetMapping("/isBookmarked")
+    @Operation(summary = "찜한 교육 여부 조회", description = "찜한 교육인지 여부를 조회합니다.")
+    public DataResponse<Object> isBookmarked(@Parameter int number, Authentication authentication) {
+        String username = authentication.getName();
+
+        return DataResponse.of(new BookmarkStatusResponse(bookmarkService.isBookmarked(username, number)));
     }
 }
