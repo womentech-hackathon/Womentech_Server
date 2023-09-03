@@ -3,7 +3,7 @@ version: '3.8'
 services:
   spring-boot-app:
     container_name: my-spring-boot-app
-    image: soyeonii/womentech-server
+    image: soyeonii/iruda-server
     restart: always
     ports:
       - "8080:8080"
