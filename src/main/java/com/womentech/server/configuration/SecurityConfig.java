@@ -17,7 +17,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.*;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
-//    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -30,15 +29,14 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .csrf().disable()
                 .cors().and()
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/user/login", "/user/join").permitAll()
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()   // Swagger UI 예외 추가
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests()
+                .requestMatchers("/", "/user/login", "/user/join").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()   // Swagger UI 예외 추가
+                .anyRequest().authenticated()
+                .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS) // 세션 사용하지 않음
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 적용
-//                .addFilterBefore(exceptionHandlerFilter, JwtFilter.class)
                 .build();
     }
 }

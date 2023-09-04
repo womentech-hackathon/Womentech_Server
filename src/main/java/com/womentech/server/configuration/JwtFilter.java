@@ -3,6 +3,7 @@ package com.womentech.server.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.womentech.server.exception.Code;
 import com.womentech.server.exception.GeneralException;
+import com.womentech.server.exception.dto.ErrorResponse;
 import com.womentech.server.service.UserDetailsServiceImpl;
 import com.womentech.server.util.JwtUtil;
 import com.womentech.server.util.RedisUtil;
@@ -21,8 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
@@ -36,11 +36,6 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         log.info("Authorization : {}", authorization);
-
-        if (request.getRequestURI().equals("/") || request.getRequestURI().equals("/user/login") || request.getRequestURI().equals("/user/join")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         try {
             // Token이 없을 경우 block
@@ -76,22 +71,20 @@ public class JwtFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             filterChain.doFilter(request, response);
-        } catch (GeneralException ex) {
-            response.setStatus(ex.getErrorCode().getCode()); // 예외 코드의 HTTP 상태 코드를 사용
-            response.setContentType("application/json"); // JSON 응답 타입으로 설정
+        } catch (GeneralException e) {
+            response.setStatus(e.getErrorCode().getCode());
+            response.setContentType("application/json; charset=UTF-8");
 
-            // 에러 응답 데이터 생성
-            Map<String, Object> errorResponse = new LinkedHashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("code", ex.getErrorCode().getCode());
-            errorResponse.put("message", ex.getErrorCode().getMessage() + " - " + ex.getMessage());
-
-            // JSON 변환 후 응답 본문에 작성
-            ObjectMapper objectMapper = new ObjectMapper();
-            String errorResponseJson = objectMapper.writeValueAsString(errorResponse);
-
-            response.getWriter().write(errorResponseJson);
-            response.getWriter().flush();
+            response.getWriter().write(new ObjectMapper().writeValueAsString(
+                    ErrorResponse.of(e.getErrorCode(), e.getErrorCode().getMessage() + " - " + e.getMessage()))
+            );
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String[] excludePath = {"/", "/user/login", "/user/join", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"};
+        String path = request.getRequestURI();
+        return Arrays.stream(excludePath).anyMatch(path::endsWith);
     }
 }
