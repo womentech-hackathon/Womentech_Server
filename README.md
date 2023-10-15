@@ -8,7 +8,7 @@
 ```
 
 <div align="center">
-  <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fwomentech-hackathon%2FWomentech_Server&count_bg=%238CA7FF&title_bg=%235C82FC&icon=micro-dot-blog.svg&icon_color=%23FFDC62&title=%EC%9D%B4%EB%A3%A8%EB%8B%A4+AOS&edge_flat=false"/></a>
+  <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fwomentech-hackathon%2FWomentech_Server&count_bg=%238CA7FF&title_bg=%235C82FC&icon=micro-dot-blog.svg&icon_color=%23FFDC62&title=%EC%9D%B4%EB%A3%A8%EB%8B%A4+Server&edge_flat=false"/></a>
 </div>
 
 ---
